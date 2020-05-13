@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-postgres-deployment
+  namespace: default # We're deploying to Docker's local Kubernetes cluster, so the only namespace is "default"
+spec:
+  selector:
+    matchLabels:
+      app: my-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-postgres
+    spec:
+      containers:
+        - name: my-postgres-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: POSTGRES_PASSWORD
+              value: LOCAL
+          ports:
+            - name: http
+              containerPort: 5432
+              protocol: TCP
